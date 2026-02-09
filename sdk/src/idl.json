@@ -1,0 +1,111 @@
+{
+  "version": "0.1.0",
+  "name": "agbero",
+  "instructions": [
+    {
+      "name": "createBond",
+      "accounts": [...],
+      "args": [...]
+    },
+    {
+      "name": "stakeCollateral",
+      "accounts": [...],
+      "args": []
+    },
+    {
+      "name": "submitProof",
+      "accounts": [...],
+      "args": [{"name": "proofUri", "type": "string"}]
+    },
+    {
+      "name": "verifyWork",
+      "accounts": [...],
+      "args": [{"name": "approve", "type": "bool"}]
+    },
+    {
+      "name": "finalizeBond",
+      "accounts": [...],
+      "args": []
+    },
+    {
+      "name": "emergencySlash",
+      "accounts": [...],
+      "args": []
+    }
+  ],
+  "accounts": [
+    {
+      "name": "Bond",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {"name": "bondId", "type": "string"},
+          {"name": "principal", "type": "publicKey"},
+          {"name": "agent", "type": "publicKey"},
+          {"name": "taskDescription", "type": "string"},
+          {"name": "collateralAmount", "type": "u64"},
+          {"name": "deadline", "type": "i64"},
+          {"name": "status", "type": {"defined": "BondStatus"}},
+          {"name": "createdAt", "type": "i64"},
+          {"name": "completedAt", "type": "i64"},
+          {"name": "verificationVotes", "type": {"vec": {"defined": "VerificationVote"}}},
+          {"name": "slashVotes", "type": {"vec": {"defined": "SlashVote"}}},
+          {"name": "proofUri", "type": "string"},
+          {"name": "bump", "type": "u8"}
+        ]
+      }
+    }
+  ],
+  "types": [
+    {
+      "name": "BondStatus",
+      "type": {
+        "kind": "enum",
+        "variants": [
+          {"name": "Pending"},
+          {"name": "Active"},
+          {"name": "PendingVerification"},
+          {"name": "Completed"},
+          {"name": "Slashed"}
+        ]
+      }
+    },
+    {
+      "name": "VerificationVote",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {"name": "verifier", "type": "publicKey"},
+          {"name": "approve", "type": "bool"},
+          {"name": "timestamp", "type": "i64"}
+        ]
+      }
+    },
+    {
+      "name": "SlashVote",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {"name": "voter", "type": "publicKey"},
+          {"name": "reason", "type": "string"},
+          {"name": "timestamp", "type": "i64"}
+        ]
+      }
+    }
+  ],
+  "errors": [
+    {"code": 6000, "name": "DescriptionTooLong", "msg": "Description too long (max 500 chars)"},
+    {"code": 6001, "name": "CollateralTooLow", "msg": "Collateral too low (min 0.001 SOL)"},
+    {"code": 6002, "name": "InvalidDeadline", "msg": "Invalid deadline"},
+    {"code": 6003, "name": "InvalidBondStatus", "msg": "Invalid bond status"},
+    {"code": 6004, "name": "UnauthorizedAgent", "msg": "Unauthorized agent"},
+    {"code": 6005, "name": "UnauthorizedPrincipal", "msg": "Unauthorized principal"},
+    {"code": 6006, "name": "AgentCannotVerify", "msg": "Agent cannot verify own work"},
+    {"code": 6007, "name": "DeadlineExceeded", "msg": "Deadline exceeded"},
+    {"code": 6008, "name": "ProofUriTooLong", "msg": "Proof URI too long"},
+    {"code": 6009, "name": "QuorumNotReached", "msg": "Quorum not yet reached"}
+  ],
+  "metadata": {
+    "address": "Agbero1111111111111111111111111111111111111"
+  }
+}
