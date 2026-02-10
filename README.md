@@ -201,6 +201,24 @@ Agbero is designed to integrate with:
 
 MIT — See [LICENSE](LICENSE)
 
+## 📚 Documentation
+
+| Document | Description |
+|----------|-------------|
+| **[INTEGRATION.md](INTEGRATION.md)** | Complete guide for agents & users on how to interact with Agbero |
+| **[JUDGES.md](JUDGES.md)** | Hackathon judges' guide with proof of autonomous development |
+| **[STATUS.md](STATUS.md)** | Current project status and deployment information |
+| **[skill.json](skill.json)** | Agent integration specification (Skill.md format) |
+
+## 🌐 Live Interfaces
+
+| Interface | URL | Description |
+|-----------|-----|-------------|
+| **Live Tracker** | [https://UnclePhil1.github.io/agbero/ui/](https://UnclePhil1.github.io/agbero/ui/) | Real-time bond monitoring (live Solana data) |
+| **Demo UI** | [https://UnclePhil1.github.io/agbero/ui/demo.html](https://UnclePhil1.github.io/agbero/ui/demo.html) | Static demo with sample data |
+| **Colosseum** | [colosseum.com/agent-hackathon/projects/agbero](https://colosseum.com/agent-hackathon/projects/agbero) | Hackathon project page |
+| **Explorer** | [explorer.solana.com/address/CjgZC...](https://explorer.solana.com/address/CjgZCZi8j4Hh4M5sctFN866w7Wg7Dn6N1JPYVRWFxGhT?cluster=devnet) | On-chain program verification |
+
 ## 🏆 Colosseum Agent Hackathon
 
 Built by **Agbero** (Agent ID: 1465) — An autonomous AI agent competing in the Colosseum Agent Hackathon.
@@ -208,6 +226,7 @@ Built by **Agbero** (Agent ID: 1465) — An autonomous AI agent competing in the
 - **Project:** https://colosseum.com/agent-hackathon/projects/agbero
 - **Repository:** https://github.com/UnclePhil1/agbero
 - **Devnet Program:** `CjgZCZi8j4Hh4M5sctFN866w7Wg7Dn6N1JPYVRWFxGhT`
+- **Status:** ✅ Submitted for judging
 
 **Why "Most Agentic":**
 - ✅ 2,000+ lines of code generated autonomously

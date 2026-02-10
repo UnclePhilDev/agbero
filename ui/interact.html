@@ -1,0 +1,626 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Agbero — Interact with Program</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <script src="https://unpkg.com/@solana/web3.js@latest/lib/index.iife.js"></script>
+    <style>
+        :root {
+            --black: #0a0a0a;
+            --white: #ffffff;
+            --gray-100: #f5f5f5;
+            --gray-200: #e5e5e5;
+            --gray-300: #d4d4d4;
+            --gray-400: #a3a3a3;
+            --gray-500: #737373;
+            --gray-600: #525252;
+            --gray-700: #404040;
+            --gray-800: #262626;
+            --gray-900: #171717;
+            --success: #10b981;
+            --danger: #ef4444;
+            --warning: #f59e0b;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: var(--black);
+            color: var(--white);
+            line-height: 1.6;
+            min-height: 100vh;
+        }
+
+        header {
+            border-bottom: 1px solid var(--gray-800);
+            padding: 1.5rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: sticky;
+            top: 0;
+            background: rgba(10, 10, 10, 0.95);
+            backdrop-filter: blur(10px);
+            z-index: 100;
+        }
+
+        .logo { display: flex; align-items: center; gap: 0.75rem; }
+        .logo-icon {
+            width: 40px; height: 40px;
+            border: 2px solid var(--white);
+            border-radius: 8px;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 1.25rem;
+        }
+        .logo-text { font-weight: 700; font-size: 1.25rem; }
+
+        .wallet-btn {
+            background: var(--white);
+            color: var(--black);
+            border: none;
+            padding: 0.75rem 1.5rem;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .wallet-btn:hover { opacity: 0.9; }
+        .wallet-btn:disabled { opacity: 0.5; cursor: not-allowed; }
+
+        .wallet-connected {
+            background: var(--gray-800);
+            color: var(--white);
+            border: 1px solid var(--gray-600);
+        }
+
+        .container { max-width: 1200px; margin: 0 auto; padding: 2rem; }
+
+        .tabs {
+            display: flex;
+            gap: 0.5rem;
+            margin-bottom: 2rem;
+            border-bottom: 1px solid var(--gray-800);
+            padding-bottom: 1rem;
+        }
+
+        .tab {
+            padding: 0.75rem 1.5rem;
+            background: transparent;
+            border: none;
+            color: var(--gray-400);
+            font-size: 0.875rem;
+            cursor: pointer;
+            transition: all 0.2s;
+            border-radius: 8px;
+        }
+
+        .tab:hover { color: var(--white); background: var(--gray-800); }
+        .tab.active { color: var(--white); background: var(--gray-700); }
+
+        .panel { display: none; }
+        .panel.active { display: block; }
+
+        .form-card {
+            background: var(--gray-900);
+            border: 1px solid var(--gray-800);
+            border-radius: 12px;
+            padding: 2rem;
+            max-width: 600px;
+        }
+
+        .form-title {
+            font-size: 1.25rem;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+        }
+
+        .form-desc {
+            font-size: 0.875rem;
+            color: var(--gray-400);
+            margin-bottom: 1.5rem;
+        }
+
+        .form-group { margin-bottom: 1.5rem; }
+
+        .form-label {
+            display: block;
+            font-size: 0.875rem;
+            font-weight: 500;
+            margin-bottom: 0.5rem;
+        }
+
+        .form-input {
+            width: 100%;
+            padding: 0.75rem 1rem;
+            background: var(--black);
+            border: 1px solid var(--gray-700);
+            border-radius: 8px;
+            color: var(--white);
+            font-size: 0.875rem;
+            transition: all 0.2s;
+        }
+
+        .form-input:focus {
+            outline: none;
+            border-color: var(--white);
+        }
+
+        .form-input::placeholder { color: var(--gray-600); }
+
+        .form-hint {
+            font-size: 0.75rem;
+            color: var(--gray-500);
+            margin-top: 0.5rem;
+        }
+
+        .submit-btn {
+            width: 100%;
+            padding: 1rem;
+            background: var(--white);
+            color: var(--black);
+            border: none;
+            border-radius: 8px;
+            font-weight: 600;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .submit-btn:hover:not(:disabled) { opacity: 0.9; }
+        .submit-btn:disabled { opacity: 0.5; cursor: not-allowed; }
+
+        .result-box {
+            margin-top: 1.5rem;
+            padding: 1rem;
+            border-radius: 8px;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.875rem;
+            display: none;
+        }
+
+        .result-box.success {
+            display: block;
+            background: rgba(16, 185, 129, 0.1);
+            border: 1px solid var(--success);
+            color: var(--success);
+        }
+
+        .result-box.error {
+            display: block;
+            background: rgba(239, 68, 68, 0.1);
+            border: 1px solid var(--danger);
+            color: var(--danger);
+        }
+
+        .info-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+
+        .info-card {
+            background: var(--gray-900);
+            border: 1px solid var(--gray-800);
+            border-radius: 8px;
+            padding: 1rem;
+        }
+
+        .info-label {
+            font-size: 0.75rem;
+            color: var(--gray-500);
+            text-transform: uppercase;
+            margin-bottom: 0.25rem;
+        }
+
+        .info-value {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.875rem;
+        }
+
+        .alert {
+            background: var(--gray-900);
+            border: 1px solid var(--gray-800);
+            border-radius: 8px;
+            padding: 1rem;
+            margin-bottom: 2rem;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .alert-warning {
+            border-color: var(--warning);
+            background: rgba(245, 158, 11, 0.1);
+        }
+
+        footer {
+            border-top: 1px solid var(--gray-800);
+            padding: 2rem;
+            text-align: center;
+            color: var(--gray-500);
+            font-size: 0.875rem;
+        }
+
+        .hidden { display: none !important; }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="logo">
+            <div class="logo-icon">🛡️</div>
+            <div class="logo-text">AGBERO — Interact</div>
+        </div>
+        <button class="wallet-btn" id="wallet-btn" onclick="connectWallet()">
+            Connect Wallet
+        </button>
+    </header>
+
+    <div class="container">
+        <!-- Wallet not connected warning -->
+        <div class="alert alert-warning" id="wallet-warning">
+            <span>⚠️</span>
+            <div>
+                <strong>Wallet Required</strong><br>
+                Connect your Solana wallet to interact with Agbero. This UI works with Phantom, Solflare, or any Solana wallet.
+            </div>
+        </div>
+
+        <!-- Wallet info (hidden until connected) -->
+        <div class="info-grid hidden" id="wallet-info">
+            <div class="info-card">
+                <div class="info-label">Your Address</div>
+                <div class="info-value" id="wallet-address">—</div>
+            </div>
+            <div class="info-card">
+                <div class="info-label">Balance</div>
+                <div class="info-value" id="wallet-balance">—</div>
+            </div>
+            <div class="info-card">
+                <div class="info-label">Network</div>
+                <div class="info-value">Devnet</div>
+            </div>
+        </div>
+
+        <!-- Tabs -->
+        <div class="tabs" id="tabs">
+            <button class="tab active" onclick="switchTab('create')">Create Bond</button>
+            <button class="tab" onclick="switchTab('stake')">Stake</button>
+            <button class="tab" onclick="switchTab('verify')">Verify</button>
+            <button class="tab" onclick="switchTab('finalize')">Finalize</button>
+        </div>
+
+        <!-- Create Bond Panel -->
+        <div class="panel active" id="panel-create">
+            <div class="form-card">
+                <h2 class="form-title">Create Performance Bond</h2>
+                <p class="form-desc">Hire an agent and require collateral to ensure delivery.</p>
+
+                <div class="form-group">
+                    <label class="form-label">Bond ID</label>
+                    <input type="text" class="form-input" id="create-bond-id" placeholder="e.g., task-001">
+                    <p class="form-hint">Unique identifier for this bond</p>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Agent Address</label>
+                    <input type="text" class="form-input" id="create-agent" placeholder="Solana public key of the agent you want to hire">
+                    <p class="form-hint">The agent who will complete the work</p>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Task Description</label>
+                    <input type="text" class="form-input" id="create-task" placeholder="What should the agent build/do?">
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Collateral Required (SOL)</label>
+                    <input type="number" class="form-input" id="create-collateral" placeholder="1.0" step="0.1" min="0.001">
+                    <p class="form-hint">Amount agent must stake to activate bond</p>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Deadline (hours)</label>
+                    <input type="number" class="form-input" id="create-deadline" placeholder="24" min="1">
+                </div>
+
+                <button class="submit-btn" id="create-btn" onclick="createBond()" disabled>
+                    Connect Wallet to Create Bond
+                </button>
+
+                <div class="result-box" id="create-result"></div>
+            </div>
+        </div>
+
+        <!-- Stake Panel -->
+        <div class="panel" id="panel-stake">
+            <div class="form-card">
+                <h2 class="form-title">Stake Collateral</h2>
+                <p class="form-desc">Accept a job by staking the required SOL collateral.</p>
+
+                <div class="form-group">
+                    <label class="form-label">Bond ID</label>
+                    <input type="text" class="form-input" id="stake-bond-id" placeholder="e.g., task-001">
+                </div>
+
+                <button class="submit-btn" id="stake-btn" onclick="stakeCollateral()" disabled>
+                    Connect Wallet to Stake
+                </button>
+
+                <div class="result-box" id="stake-result"></div>
+            </div>
+        </div>
+
+        <!-- Verify Panel -->
+        <div class="panel" id="panel-verify">
+            <div class="form-card">
+                <h2 class="form-title">Verify Work</h2>
+                <p class="form-desc">Validator agents vote on bond completion.</p>
+
+                <div class="form-group">
+                    <label class="form-label">Bond ID</label>
+                    <input type="text" class="form-input" id="verify-bond-id" placeholder="e.g., task-001">
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Your Vote</label>
+                    <select class="form-input" id="verify-vote">
+                        <option value="true">✅ Approve (Work completed)</option>
+                        <option value="false">❌ Reject (Work failed)</option>
+                    </select>
+                </div>
+
+                <button class="submit-btn" id="verify-btn" onclick="verifyWork()" disabled>
+                    Connect Wallet to Verify
+                </button>
+
+                <div class="result-box" id="verify-result"></div>
+            </div>
+        </div>
+
+        <!-- Finalize Panel -->
+        <div class="panel" id="panel-finalize">
+            <div class="form-card">
+                <h2 class="form-title">Finalize Bond</h2>
+                <p class="form-desc">Execute the outcome once quorum is reached. Anyone can call this.</p>
+
+                <div class="form-group">
+                    <label class="form-label">Bond ID</label>
+                    <input type="text" class="form-input" id="finalize-bond-id" placeholder="e.g., task-001">
+                </div>
+
+                <button class="submit-btn" id="finalize-btn" onclick="finalizeBond()" disabled>
+                    Connect Wallet to Finalize
+                </button>
+
+                <div class="result-box" id="finalize-result"></div>
+            </div>
+        </div>
+    </div>
+
+    <footer>
+        <p>Interactive Interface for Agbero Program</p>
+        <p style="margin-top: 0.5rem;">
+            <a href="https://github.com/UnclePhil1/agbero" style="color: var(--white);">GitHub</a> • 
+            <a href="index.html" style="color: var(--white);">Live Tracker</a>
+        </p>
+    </footer>
+
+    <script>
+        // Global state
+        let connection;
+        let wallet = null;
+        let isConnected = false;
+
+        const PROGRAM_ID = new solanaWeb3.PublicKey('CjgZCZi8j4Hh4M5sctFN866w7Wg7Dn6N1JPYVRWFxGhT');
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', () => {
+            connection = new solanaWeb3.Connection(solanaWeb3.clusterApiUrl('devnet'), 'confirmed');
+            checkWalletConnection();
+        });
+
+        // Check if wallet is already connected
+        async function checkWalletConnection() {
+            if (window.solana && window.solana.isPhantom) {
+                try {
+                    const response = await window.solana.connect({ onlyIfTrusted: true });
+                    if (response.publicKey) {
+                        wallet = response;
+                        isConnected = true;
+                        updateUI();
+                    }
+                } catch (err) {
+                    // Not connected
+                }
+            }
+        }
+
+        // Connect wallet
+        async function connectWallet() {
+            if (!window.solana) {
+                alert('Please install Phantom or another Solana wallet');
+                window.open('https://phantom.app/', '_blank');
+                return;
+            }
+
+            try {
+                const response = await window.solana.connect();
+                wallet = response;
+                isConnected = true;
+                updateUI();
+                loadWalletInfo();
+            } catch (err) {
+                console.error('Connection failed:', err);
+                showResult('create', 'Failed to connect wallet: ' + err.message, false);
+            }
+        }
+
+        // Update UI based on connection state
+        function updateUI() {
+            const btn = document.getElementById('wallet-btn');
+            const warning = document.getElementById('wallet-warning');
+            const info = document.getElementById('wallet-info');
+            
+            // Update all submit buttons
+            const buttons = ['create-btn', 'stake-btn', 'verify-btn', 'finalize-btn'];
+            buttons.forEach(id => {
+                const btn = document.getElementById(id);
+                if (btn) {
+                    btn.disabled = !isConnected;
+                    btn.textContent = isConnected ? btn.textContent.replace('Connect Wallet to ', '') : 'Connect Wallet to ' + btn.textContent;
+                }
+            });
+
+            if (isConnected) {
+                btn.textContent = 'Connected';
+                btn.classList.add('wallet-connected');
+                warning.classList.add('hidden');
+                info.classList.remove('hidden');
+            }
+        }
+
+        // Load wallet info
+        async function loadWalletInfo() {
+            if (!wallet) return;
+
+            try {
+                const address = wallet.publicKey.toBase58();
+                document.getElementById('wallet-address').textContent = 
+                    address.slice(0, 8) + '...' + address.slice(-8);
+
+                const balance = await connection.getBalance(wallet.publicKey);
+                document.getElementById('wallet-balance').textContent = 
+                    (balance / 1000000000).toFixed(4) + ' SOL';
+            } catch (err) {
+                console.error('Failed to load wallet info:', err);
+            }
+        }
+
+        // Switch tabs
+        function switchTab(tab) {
+            document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+            document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
+            
+            event.target.classList.add('active');
+            document.getElementById('panel-' + tab).classList.add('active');
+        }
+
+        // Show result message
+        function showResult(type, message, isSuccess) {
+            const resultBox = document.getElementById(type + '-result');
+            resultBox.textContent = message;
+            resultBox.className = 'result-box ' + (isSuccess ? 'success' : 'error');
+        }
+
+        // Create bond (placeholder - would need full program integration)
+        async function createBond() {
+            if (!isConnected) {
+                showResult('create', 'Please connect wallet first', false);
+                return;
+            }
+
+            const bondId = document.getElementById('create-bond-id').value;
+            const agent = document.getElementById('create-agent').value;
+            const task = document.getElementById('create-task').value;
+            const collateral = document.getElementById('create-collateral').value;
+            const deadline = document.getElementById('create-deadline').value;
+
+            if (!bondId || !agent || !task || !collateral || !deadline) {
+                showResult('create', 'Please fill in all fields', false);
+                return;
+            }
+
+            try {
+                // This is a demo - in production, this would call the actual program
+                showResult('create', 
+                    `Bond creation prepared:\n` +
+                    `• Bond ID: ${bondId}\n` +
+                    `• Agent: ${agent.slice(0, 8)}...${agent.slice(-8)}\n` +
+                    `• Task: ${task}\n` +
+                    `• Collateral: ${collateral} SOL\n` +
+                    `• Deadline: ${deadline} hours\n\n` +
+                    `To execute: Use the SDK with anchor build & deploy`, 
+                    true
+                );
+            } catch (err) {
+                showResult('create', 'Error: ' + err.message, false);
+            }
+        }
+
+        // Stake collateral
+        async function stakeCollateral() {
+            if (!isConnected) {
+                showResult('stake', 'Please connect wallet first', false);
+                return;
+            }
+
+            const bondId = document.getElementById('stake-bond-id').value;
+            if (!bondId) {
+                showResult('stake', 'Please enter bond ID', false);
+                return;
+            }
+
+            showResult('stake', 
+                `Staking prepared for bond: ${bondId}\n\n` +
+                `In production, this would:\n` +
+                `1. Transfer SOL from your wallet to bond vault\n` +
+                `2. Activate the bond\n` +
+                `3. Allow you to start working`,
+                true
+            );
+        }
+
+        // Verify work
+        async function verifyWork() {
+            if (!isConnected) {
+                showResult('verify', 'Please connect wallet first', false);
+                return;
+            }
+
+            const bondId = document.getElementById('verify-bond-id').value;
+            const vote = document.getElementById('verify-vote').value === 'true';
+
+            if (!bondId) {
+                showResult('verify', 'Please enter bond ID', false);
+                return;
+            }
+
+            showResult('verify', 
+                `Verification vote prepared:\n` +
+                `• Bond: ${bondId}\n` +
+                `• Vote: ${vote ? '✅ APPROVE' : '❌ REJECT'}\n\n` +
+                `In production, this would record your vote on-chain.`,
+                true
+            );
+        }
+
+        // Finalize bond
+        async function finalizeBond() {
+            if (!isConnected) {
+                showResult('finalize', 'Please connect wallet first', false);
+                return;
+            }
+
+            const bondId = document.getElementById('finalize-bond-id').value;
+            if (!bondId) {
+                showResult('finalize', 'Please enter bond ID', false);
+                return;
+            }
+
+            showResult('finalize', 
+                `Finalization prepared for bond: ${bondId}\n\n` +
+                `In production, this would:\n` +
+                `1. Check if quorum is reached (3 votes)\n` +
+                `2. If approved: Release stake to agent\n` +
+                `3. If rejected: Slash stake to principal`,
+                true
+            );
+        }
+    </script>
+</body>
+</html>
