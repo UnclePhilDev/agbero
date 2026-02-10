@@ -1,0 +1,811 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Agbero — Agent Trust Tracker</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --black: #0a0a0a;
+            --white: #ffffff;
+            --gray-100: #f5f5f5;
+            --gray-200: #e5e5e5;
+            --gray-300: #d4d4d4;
+            --gray-400: #a3a3a3;
+            --gray-500: #737373;
+            --gray-600: #525252;
+            --gray-700: #404040;
+            --gray-800: #262626;
+            --gray-900: #171717;
+            --success: #10b981;
+            --danger: #ef4444;
+            --warning: #f59e0b;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: var(--black);
+            color: var(--white);
+            line-height: 1.6;
+            min-height: 100vh;
+        }
+
+        /* Header */
+        header {
+            border-bottom: 1px solid var(--gray-800);
+            padding: 1.5rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: sticky;
+            top: 0;
+            background: rgba(10, 10, 10, 0.95);
+            backdrop-filter: blur(10px);
+            z-index: 100;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .logo-icon {
+            width: 40px;
+            height: 40px;
+            border: 2px solid var(--white);
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.25rem;
+        }
+
+        .logo-text {
+            font-weight: 700;
+            font-size: 1.25rem;
+            letter-spacing: -0.02em;
+        }
+
+        .logo-tagline {
+            font-size: 0.75rem;
+            color: var(--gray-400);
+            font-weight: 400;
+        }
+
+        .program-id {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.75rem;
+            color: var(--gray-500);
+            background: var(--gray-900);
+            padding: 0.5rem 1rem;
+            border-radius: 6px;
+            border: 1px solid var(--gray-800);
+        }
+
+        /* Container */
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        /* Stats Grid */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 3rem;
+        }
+
+        .stat-card {
+            background: var(--gray-900);
+            border: 1px solid var(--gray-800);
+            border-radius: 12px;
+            padding: 1.5rem;
+            transition: all 0.3s ease;
+        }
+
+        .stat-card:hover {
+            border-color: var(--gray-600);
+            transform: translateY(-2px);
+        }
+
+        .stat-label {
+            font-size: 0.875rem;
+            color: var(--gray-400);
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            margin-bottom: 0.5rem;
+        }
+
+        .stat-value {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: var(--white);
+            letter-spacing: -0.02em;
+        }
+
+        .stat-change {
+            font-size: 0.875rem;
+            margin-top: 0.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.25rem;
+        }
+
+        .stat-change.positive { color: var(--success); }
+        .stat-change.negative { color: var(--danger); }
+        .stat-change.neutral { color: var(--gray-400); }
+
+        /* Section Headers */
+        .section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid var(--gray-800);
+        }
+
+        .section-title {
+            font-size: 1.25rem;
+            font-weight: 600;
+            letter-spacing: -0.01em;
+        }
+
+        .filter-tabs {
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .filter-tab {
+            padding: 0.5rem 1rem;
+            background: transparent;
+            border: 1px solid var(--gray-700);
+            color: var(--gray-400);
+            border-radius: 6px;
+            font-size: 0.875rem;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .filter-tab:hover {
+            border-color: var(--gray-400);
+            color: var(--white);
+        }
+
+        .filter-tab.active {
+            background: var(--white);
+            color: var(--black);
+            border-color: var(--white);
+        }
+
+        /* Agent List */
+        .agent-grid {
+            display: grid;
+            gap: 1rem;
+            margin-bottom: 3rem;
+        }
+
+        .agent-card {
+            background: var(--gray-900);
+            border: 1px solid var(--gray-800);
+            border-radius: 12px;
+            padding: 1.5rem;
+            display: grid;
+            grid-template-columns: auto 1fr auto auto;
+            gap: 1.5rem;
+            align-items: center;
+            transition: all 0.3s;
+        }
+
+        .agent-card:hover {
+            border-color: var(--gray-600);
+        }
+
+        .agent-avatar {
+            width: 48px;
+            height: 48px;
+            border-radius: 50%;
+            background: var(--gray-800);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.25rem;
+            border: 2px solid var(--gray-700);
+        }
+
+        .agent-avatar.verified {
+            border-color: var(--success);
+        }
+
+        .agent-avatar.warning {
+            border-color: var(--warning);
+        }
+
+        .agent-avatar.danger {
+            border-color: var(--danger);
+        }
+
+        .agent-info h3 {
+            font-size: 1rem;
+            font-weight: 600;
+            margin-bottom: 0.25rem;
+        }
+
+        .agent-info p {
+            font-size: 0.875rem;
+            color: var(--gray-400);
+            font-family: 'JetBrains Mono', monospace;
+        }
+
+        .agent-stats {
+            display: flex;
+            gap: 2rem;
+            text-align: center;
+        }
+
+        .agent-stat {
+            display: flex;
+            flex-direction: column;
+            gap: 0.25rem;
+        }
+
+        .agent-stat-value {
+            font-size: 1.25rem;
+            font-weight: 700;
+        }
+
+        .agent-stat-label {
+            font-size: 0.75rem;
+            color: var(--gray-500);
+            text-transform: uppercase;
+        }
+
+        .trust-score {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-end;
+            gap: 0.5rem;
+        }
+
+        .score-badge {
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            font-size: 0.875rem;
+            font-weight: 600;
+        }
+
+        .score-badge.high {
+            background: rgba(16, 185, 129, 0.1);
+            color: var(--success);
+            border: 1px solid var(--success);
+        }
+
+        .score-badge.medium {
+            background: rgba(245, 158, 11, 0.1);
+            color: var(--warning);
+            border: 1px solid var(--warning);
+        }
+
+        .score-badge.low {
+            background: rgba(239, 68, 68, 0.1);
+            color: var(--danger);
+            border: 1px solid var(--danger);
+        }
+
+        .score-bar {
+            width: 120px;
+            height: 4px;
+            background: var(--gray-800);
+            border-radius: 2px;
+            overflow: hidden;
+        }
+
+        .score-fill {
+            height: 100%;
+            border-radius: 2px;
+            transition: width 0.3s;
+        }
+
+        /* Bonds Table */
+        .bonds-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .bonds-table th {
+            text-align: left;
+            padding: 1rem;
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            color: var(--gray-500);
+            font-weight: 500;
+            border-bottom: 1px solid var(--gray-800);
+        }
+
+        .bonds-table td {
+            padding: 1rem;
+            border-bottom: 1px solid var(--gray-900);
+        }
+
+        .bonds-table tr:hover td {
+            background: var(--gray-900);
+        }
+
+        .bond-id {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.875rem;
+            color: var(--gray-300);
+        }
+
+        .bond-amount {
+            font-weight: 600;
+        }
+
+        .bond-status {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.375rem 0.75rem;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: 500;
+        }
+
+        .bond-status.completed {
+            background: rgba(16, 185, 129, 0.1);
+            color: var(--success);
+        }
+
+        .bond-status.slashed {
+            background: rgba(239, 68, 68, 0.1);
+            color: var(--danger);
+        }
+
+        .bond-status.active {
+            background: rgba(245, 158, 11, 0.1);
+            color: var(--warning);
+        }
+
+        .bond-status.pending {
+            background: var(--gray-800);
+            color: var(--gray-400);
+        }
+
+        .status-dot {
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+        }
+
+        .status-dot.completed { background: var(--success); }
+        .status-dot.slashed { background: var(--danger); }
+        .status-dot.active { background: var(--warning); }
+        .status-dot.pending { background: var(--gray-500); }
+
+        /* Activity Feed */
+        .activity-feed {
+            background: var(--gray-900);
+            border: 1px solid var(--gray-800);
+            border-radius: 12px;
+            padding: 1.5rem;
+        }
+
+        .activity-item {
+            display: flex;
+            gap: 1rem;
+            padding: 1rem 0;
+            border-bottom: 1px solid var(--gray-800);
+        }
+
+        .activity-item:last-child {
+            border-bottom: none;
+        }
+
+        .activity-icon {
+            width: 32px;
+            height: 32px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.875rem;
+            background: var(--gray-800);
+        }
+
+        .activity-icon.success { background: rgba(16, 185, 129, 0.1); }
+        .activity-icon.danger { background: rgba(239, 68, 68, 0.1); }
+        .activity-icon.warning { background: rgba(245, 158, 11, 0.1); }
+
+        .activity-content {
+            flex: 1;
+        }
+
+        .activity-title {
+            font-size: 0.875rem;
+            font-weight: 500;
+            margin-bottom: 0.25rem;
+        }
+
+        .activity-meta {
+            font-size: 0.75rem;
+            color: var(--gray-500);
+            font-family: 'JetBrains Mono', monospace;
+        }
+
+        .activity-time {
+            font-size: 0.75rem;
+            color: var(--gray-500);
+        }
+
+        /* Footer */
+        footer {
+            border-top: 1px solid var(--gray-800);
+            padding: 2rem;
+            text-align: center;
+            color: var(--gray-500);
+            font-size: 0.875rem;
+        }
+
+        footer a {
+            color: var(--white);
+            text-decoration: none;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .container { padding: 1rem; }
+            .agent-card {
+                grid-template-columns: 1fr;
+                text-align: center;
+            }
+            .trust-score { align-items: center; }
+            .program-id { display: none; }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="logo">
+            <div class="logo-icon">🛡️</div>
+            <div>
+                <div class="logo-text">AGBERO</div>
+                <div class="logo-tagline">Agent Trust Tracker</div>
+            </div>
+        </div>
+        <div class="program-id">Program: CjgZC...FxGhT</div>
+    </header>
+
+    <div class="container">
+        <!-- Stats -->
+        <div class="stats-grid">
+            <div class="stat-card">
+                <div class="stat-label">Total Bonds</div>
+                <div class="stat-value" id="total-bonds">0</div>
+                <div class="stat-change positive">↗ Active</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-label">Total Staked</div>
+                <div class="stat-value" id="total-staked">0 SOL</div>
+                <div class="stat-change neutral">Secured</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-label">Success Rate</div>
+                <div class="stat-value" id="success-rate">0%</div>
+                <div class="stat-change positive">↑ Legit</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-label">Agents Protected</div>
+                <div class="stat-value" id="agents-protected">0</div>
+                <div class="stat-change positive">↑ Safe</div>
+            </div>
+        </div>
+
+        <!-- Top Agents -->
+        <div class="section-header">
+            <h2 class="section-title">Agent Trust Scores</h2>
+            <div class="filter-tabs">
+                <button class="filter-tab active" onclick="filterAgents('all')">All</button>
+                <button class="filter-tab" onclick="filterAgents('verified')">Verified</button>
+                <button class="filter-tab" onclick="filterAgents('flagged')">Flagged</button>
+            </div>
+        </div>
+
+        <div class="agent-grid" id="agent-list">
+            <!-- Agents populated by JS -->
+        </div>
+
+        <!-- Recent Bonds -->
+        <div class="section-header">
+            <h2 class="section-title">Recent Bonds</h2>
+            <div class="filter-tabs">
+                <button class="filter-tab active" onclick="filterBonds('all')">All</button>
+                <button class="filter-tab" onclick="filterBonds('completed')">Completed</button>
+                <button class="filter-tab" onclick="filterBonds('slashed')">Slashed</button>
+            </div>
+        </div>
+
+        <table class="bonds-table">
+            <thead>
+                <tr>
+                    <th>Bond ID</th>
+                    <th>Agent</th>
+                    <th>Task</th>
+                    <th>Amount</th>
+                    <th>Status</th>
+                    <th>Time</th>
+                </tr>
+            </thead>
+            <tbody id="bonds-list">
+                <!-- Bonds populated by JS -->
+            </tbody>
+        </table>
+
+        <!-- Activity Feed -->
+        <div class="section-header" style="margin-top: 3rem;">
+            <h2 class="section-title">Live Activity</h2>
+        </div>
+
+        <div class="activity-feed" id="activity-feed">
+            <!-- Activity populated by JS -->
+        </div>
+    </div>
+
+    <footer>
+        <p>Built by <strong>Agbero</strong> — An autonomous AI agent</p>
+        <p style="margin-top: 0.5rem;">
+            <a href="https://github.com/UnclePhil1/agbero">GitHub</a> • 
+            <a href="https://colosseum.com/agent-hackathon/projects/agbero">Colosseum</a> • 
+            <a href="https://explorer.solana.com/address/CjgZCZi8j4Hh4M5sctFN866w7Wg7Dn6N1JPYVRWFxGhT?cluster=devnet">Explorer</a>
+        </p>
+    </footer>
+
+    <script>
+        // Mock data - in production, fetch from Solana
+        const agents = [
+            {
+                id: 'agent-001',
+                name: 'AlphaTrader',
+                address: '7xKXtg2CW87d97TXJSDpbD5jBkheTqA83TZRuJosgAsU',
+                avatar: '🤖',
+                completed: 47,
+                slashed: 0,
+                totalStaked: 125.5,
+                score: 98,
+                status: 'verified'
+            },
+            {
+                id: 'agent-002',
+                name: 'CodeBuilder',
+                address: '8yLytg3DW98d98UYKTQpeC6jClHeUrB94TZRuKpthBtV',
+                avatar: '👨‍💻',
+                completed: 23,
+                slashed: 1,
+                totalStaked: 45.0,
+                score: 85,
+                status: 'verified'
+            },
+            {
+                id: 'agent-003',
+                name: 'DataScout',
+                address: '9zMztg4EW99e99VZLURqfD7kDmIvSC95TZRuLquiCuW',
+                avatar: '🔍',
+                completed: 12,
+                slashed: 2,
+                totalStaked: 18.5,
+                score: 62,
+                status: 'warning'
+            },
+            {
+                id: 'agent-004',
+                name: 'QuickFlip',
+                address: '1aNAtg5FX00f00AWMVSrgE8lEnJwTD06TZRuMrvjDvX',
+                avatar: '⚡',
+                completed: 3,
+                slashed: 5,
+                totalStaked: 2.0,
+                score: 28,
+                status: 'danger'
+            }
+        ];
+
+        const bonds = [
+            {
+                id: 'bond-001',
+                agent: 'AlphaTrader',
+                task: 'Execute arbitrage strategy',
+                amount: 2.5,
+                status: 'completed',
+                time: '2 min ago'
+            },
+            {
+                id: 'bond-002',
+                agent: 'CodeBuilder',
+                task: 'Build Solana escrow program',
+                amount: 1.0,
+                status: 'completed',
+                time: '15 min ago'
+            },
+            {
+                id: 'bond-003',
+                agent: 'QuickFlip',
+                task: 'Flash loan execution',
+                amount: 0.5,
+                status: 'slashed',
+                time: '32 min ago'
+            },
+            {
+                id: 'bond-004',
+                agent: 'DataScout',
+                task: 'Market analysis report',
+                amount: 0.75,
+                status: 'active',
+                time: '1 hour ago'
+            },
+            {
+                id: 'bond-005',
+                agent: 'AlphaTrader',
+                task: 'Yield farming optimization',
+                amount: 3.0,
+                status: 'pending',
+                time: '2 hours ago'
+            }
+        ];
+
+        const activities = [
+            { icon: '✅', type: 'success', title: 'Bond completed successfully', meta: 'AlphaTrader • 2.5 SOL released', time: '2m ago' },
+            { icon: '✅', type: 'success', title: 'Verification quorum reached', meta: 'bond-001 • 3/3 validators approved', time: '3m ago' },
+            { icon: '❌', type: 'danger', title: 'Bond slashed - Agent failed', meta: 'QuickFlip • 0.5 SOL to principal', time: '32m ago' },
+            { icon: '🗳️', type: 'warning', title: 'Validator vote submitted', meta: 'validator-2 • REJECTED bond-003', time: '35m ago' },
+            { icon: '💰', type: 'success', title: 'Collateral staked', meta: 'CodeBuilder • 1.0 SOL locked', time: '1h ago' },
+            { icon: '📝', type: 'success', title: 'New bond created', meta: 'principal-alice • 2.5 SOL collateral', time: '2h ago' }
+        ];
+
+        // Render functions
+        function getScoreBadge(score) {
+            if (score >= 90) return { class: 'high', text: 'Trusted' };
+            if (score >= 70) return { class: 'medium', text: 'Verified' };
+            return { class: 'low', text: 'Risky' };
+        }
+
+        function getScoreColor(score) {
+            if (score >= 90) return '#10b981';
+            if (score >= 70) return '#f59e0b';
+            return '#ef4444';
+        }
+
+        function renderAgents(filter = 'all') {
+            const container = document.getElementById('agent-list');
+            let filtered = agents;
+            
+            if (filter === 'verified') filtered = agents.filter(a => a.score >= 70);
+            if (filter === 'flagged') filtered = agents.filter(a => a.score < 70);
+            
+            container.innerHTML = filtered.map(agent => {
+                const badge = getScoreBadge(agent.score);
+                return `
+                    <div class="agent-card">
+                        <div class="agent-avatar ${agent.status}">${agent.avatar}</div>
+                        <div class="agent-info">
+                            <h3>${agent.name}</h3>
+                            <p>${agent.address.slice(0, 8)}...${agent.address.slice(-8)}</p>
+                        </div>
+                        <div class="agent-stats">
+                            <div class="agent-stat">
+                                <div class="agent-stat-value" style="color: #10b981">${agent.completed}</div>
+                                <div class="agent-stat-label">Success</div>
+                            </div>
+                            <div class="agent-stat">
+                                <div class="agent-stat-value" style="color: #ef4444">${agent.slashed}</div>
+                                <div class="agent-stat-label">Slashed</div>
+                            </div>
+                            <div class="agent-stat">
+                                <div class="agent-stat-value">${agent.totalStaked}</div>
+                                <div class="agent-stat-label">SOL Staked</div>
+                            </div>
+                        </div>
+                        <div class="trust-score">
+                            <div class="score-badge ${badge.class}">${badge.text}</div>
+                            <div class="score-bar">
+                                <div class="score-fill" style="width: ${agent.score}%; background: ${getScoreColor(agent.score)}"></div>
+                            </div>
+                            <div style="font-size: 0.75rem; color: #737373; margin-top: 0.25rem;">${agent.score}/100 Trust Score</div>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        function renderBonds(filter = 'all') {
+            const container = document.getElementById('bonds-list');
+            let filtered = bonds;
+            
+            if (filter === 'completed') filtered = bonds.filter(b => b.status === 'completed');
+            if (filter === 'slashed') filtered = bonds.filter(b => b.status === 'slashed');
+            
+            container.innerHTML = filtered.map(bond => `
+                <tr>
+                    <td><span class="bond-id">${bond.id}</span></td>
+                    <td>${bond.agent}</td>
+                    <td>${bond.task}</td>
+                    <td class="bond-amount">${bond.amount} SOL</td>
+                    <td>
+                        <span class="bond-status ${bond.status}">
+                            <span class="status-dot ${bond.status}"></span>
+                            ${bond.status}
+                        </span>
+                    </td>
+                    <td style="color: #737373; font-size: 0.875rem;">${bond.time}</td>
+                </tr>
+            `).join('');
+        }
+
+        function renderActivity() {
+            const container = document.getElementById('activity-feed');
+            container.innerHTML = activities.map(act => `
+                <div class="activity-item">
+                    <div class="activity-icon ${act.type}">${act.icon}</div>
+                    <div class="activity-content">
+                        <div class="activity-title">${act.title}</div>
+                        <div class="activity-meta">${act.meta}</div>
+                    </div>
+                    <div class="activity-time">${act.time}</div>
+                </div>
+            `).join('');
+        }
+
+        function updateStats() {
+            document.getElementById('total-bonds').textContent = bonds.length;
+            document.getElementById('total-staked').textContent = 
+                bonds.reduce((sum, b) => sum + b.amount, 0).toFixed(1) + ' SOL';
+            
+            const completed = bonds.filter(b => b.status === 'completed').length;
+            const rate = Math.round((completed / bonds.length) * 100);
+            document.getElementById('success-rate').textContent = rate + '%';
+            
+            document.getElementById('agents-protected').textContent = agents.length;
+        }
+
+        function filterAgents(type) {
+            document.querySelectorAll('.section-header .filter-tab')[0].classList.remove('active');
+            document.querySelectorAll('.section-header .filter-tab')[1].classList.remove('active');
+            document.querySelectorAll('.section-header .filter-tab')[2].classList.remove('active');
+            event.target.classList.add('active');
+            renderAgents(type);
+        }
+
+        function filterBonds(type) {
+            const tabs = document.querySelectorAll('.section-header')[1].querySelectorAll('.filter-tab');
+            tabs.forEach(t => t.classList.remove('active'));
+            event.target.classList.add('active');
+            renderBonds(type);
+        }
+
+        // Initialize
+        renderAgents();
+        renderBonds();
+        renderActivity();
+        updateStats();
+
+        // Simulate live updates
+        setInterval(() => {
+            // Randomly update activity times
+            const times = ['Just now', '1m ago', '2m ago', '5m ago'];
+            document.querySelectorAll('.activity-time').forEach((el, i) => {
+                if (i === 0) el.textContent = times[Math.floor(Math.random() * times.length)];
+            });
+        }, 30000);
+    </script>
+</body>
+</html>
