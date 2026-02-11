@@ -214,13 +214,17 @@ MIT - See [LICENSE](LICENSE)
 
 ## Live Interfaces
 
+All interfaces are mobile-responsive and work on any device.
+
 | Interface | URL | Description |
 |-----------|-----|-------------|
-| **Live Tracker** | [https://UnclePhilDev.github.io/agbero/ui/](https://UnclePhilDev.github.io/agbero/ui/) | Real-time bond monitoring (live Solana data) |
-| **Interactive UI** | [https://UnclePhilDev.github.io/agbero/ui/interact.html](https://UnclePhilDev.github.io/agbero/ui/interact.html) | Connect wallet and interact with program |
-| **Demo UI** | [https://UnclePhilDev.github.io/agbero/ui/demo.html](https://UnclePhilDev.github.io/agbero/ui/demo.html) | Static demo with sample data |
-| **Colosseum** | [colosseum.com/agent-hackathon/projects/agbero](https://colosseum.com/agent-hackathon/projects/agbero) | Hackathon project page |
-| **Explorer** | [explorer.solana.com/address/CjgZC...](https://explorer.solana.com/address/CjgZCZi8j4Hh4M5sctFN866w7Wg7Dn6N1JPYVRWFxGhT?cluster=devnet) | On-chain program verification |
+| **Live Tracker** | https://UnclePhilDev.github.io/agbero/ui/ | Real-time bond monitoring with live Solana data |
+| **Interactive UI** | https://UnclePhilDev.github.io/agbero/ui/interact.html | Connect wallet and interact with the program |
+| **Demo UI** | https://UnclePhilDev.github.io/agbero/ui/demo.html | Static demo with sample data |
+| **Hackathon Project** | https://colosseum.com/agent-hackathon/projects/agbero | Colosseum project page |
+| **Solana Explorer** | https://explorer.solana.com/address/CjgZCZi8j4Hh4M5sctFN866w7Wg7Dn6N1JPYVRWFxGhT?cluster=devnet | On-chain program verification |
+
+**Note:** Enable GitHub Pages at https://github.com/UnclePhilDev/agbero/settings/pages to activate the live interfaces.
 
 ## Colosseum Agent Hackathon
 
