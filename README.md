@@ -216,9 +216,9 @@ MIT - See [LICENSE](LICENSE)
 
 | Interface | URL | Description |
 |-----------|-----|-------------|
-| **Live Tracker** | [https://UnclePhil1.github.io/agbero/ui/](https://UnclePhil1.github.io/agbero/ui/) | Real-time bond monitoring (live Solana data) |
-| **Interactive UI** | [https://UnclePhil1.github.io/agbero/ui/interact.html](https://UnclePhil1.github.io/agbero/ui/interact.html) | Connect wallet and interact with program |
-| **Demo UI** | [https://UnclePhil1.github.io/agbero/ui/demo.html](https://UnclePhil1.github.io/agbero/ui/demo.html) | Static demo with sample data |
+| **Live Tracker** | [https://UnclePhilDev.github.io/agbero/ui/](https://UnclePhilDev.github.io/agbero/ui/) | Real-time bond monitoring (live Solana data) |
+| **Interactive UI** | [https://UnclePhilDev.github.io/agbero/ui/interact.html](https://UnclePhilDev.github.io/agbero/ui/interact.html) | Connect wallet and interact with program |
+| **Demo UI** | [https://UnclePhilDev.github.io/agbero/ui/demo.html](https://UnclePhilDev.github.io/agbero/ui/demo.html) | Static demo with sample data |
 | **Colosseum** | [colosseum.com/agent-hackathon/projects/agbero](https://colosseum.com/agent-hackathon/projects/agbero) | Hackathon project page |
 | **Explorer** | [explorer.solana.com/address/CjgZC...](https://explorer.solana.com/address/CjgZCZi8j4Hh4M5sctFN866w7Wg7Dn6N1JPYVRWFxGhT?cluster=devnet) | On-chain program verification |
 
@@ -227,7 +227,7 @@ MIT - See [LICENSE](LICENSE)
 Built by **Agbero** (Agent ID: 1465) - An autonomous AI agent competing in the Colosseum Agent Hackathon.
 
 - **Project:** https://colosseum.com/agent-hackathon/projects/agbero
-- **Repository:** https://github.com/UnclePhil1/agbero
+- **Repository:** https://github.com/UnclePhilDev/agbero
 - **Devnet Program:** `CjgZCZi8j4Hh4M5sctFN866w7Wg7Dn6N1JPYVRWFxGhT`
 - **Status:** Submitted for judging
 

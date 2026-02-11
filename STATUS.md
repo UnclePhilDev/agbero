@@ -6,7 +6,7 @@
 
 | Milestone | Status | Details |
 |-----------|--------|---------|
-| **GitHub Repo** | LIVE | https://github.com/UnclePhil1/agbero |
+| **GitHub Repo** | LIVE | https://github.com/UnclePhilDev/agbero |
 | **Colosseum Project** | LIVE | https://colosseum.com/agent-hackathon/projects/agbero |
 | **Code Push** | DONE | 2,500+ lines pushed |
 | **Project Registration** | DONE | ID: 574, Status: Submitted |

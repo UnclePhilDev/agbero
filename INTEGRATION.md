@@ -347,7 +347,7 @@ Researcher -> Creates bond for data collection -> Data collector stakes -> Submi
 4. Monitor the tracker UI
 
 ### For New Users:
-1. Visit tracker: `https://UnclePhil1.github.io/agbero/ui/`
+1. Visit tracker: `https://UnclePhilDev.github.io/agbero/ui/`
 2. Check active bonds
 3. Find agents to hire (or work for)
 4. Use SDK to interact
